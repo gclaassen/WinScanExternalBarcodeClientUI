@@ -7,7 +7,7 @@ import ExportXlsToCsv
 def main():
     root = tk.Tk()
 
-    employeeCodes = ExportXlsToCsv.exportEmployeeData()
+    listEmployeeCodes = ExportXlsToCsv.exportEmployeeData()
 
     # Setting the title of the window
     root.title("WinScan External Barcode Printer")
@@ -15,7 +15,7 @@ def main():
     # Setting the geometry i.e Dimensions
     root.geometry("1020x600")
 
-    app = EmployeeKeypadUI.EmployeeCodes(root)
+    app = EmployeeKeypadUI.EmployeeCodes(root, listEmployeeCodes)
     root.mainloop()
 
 if __name__ == '__main__':

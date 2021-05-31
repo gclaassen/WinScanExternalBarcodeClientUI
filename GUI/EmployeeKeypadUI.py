@@ -1,8 +1,11 @@
 import tkinter as tk
 import tkinter.font as font
+from tkinter.messagebox import askyesno, askquestion
+import numpy as np
 
 class EmployeeCodes:
-    def __init__(self, master):
+    def __init__(self, master, listEmployeeCodes):
+        self.listEmployeeCodes = listEmployeeCodes
         self.master = master
         self.frame = tk.Frame(self.master)
         self.textEntryWidget = tk.Entry(self.frame)
@@ -40,11 +43,19 @@ class EmployeeCodes:
             self.textEntryWidget.insert('end', value)
 
     def acceptButtonPressed(self):
+        numEmployeeIdCode = int(self.EmployeeIdCode)
         # clear `entry`
         self.textEntryWidget.delete('0', 'end')
         # clear global
         self.EmployeeIdCode = ''
-        NotImplementedError
+
+        if np.min(np.isin(numEmployeeIdCode, self.listEmployeeCodes['Code'])) :
+            idxRow = np.min(np.where(self.listEmployeeCodes['Code'] == numEmployeeIdCode ))
+            print("Code: {0} Employee Name: {1}".format(numEmployeeIdCode, self.listEmployeeCodes['Name'][idxRow]))
+            bCorrectEmployee = confirmEmployee(numEmployeeIdCode, self.listEmployeeCodes['Name'][idxRow])
+        else:
+            print("Code: {0} not in database".format(numEmployeeIdCode))
+            ValueError
 
 
     def employeesWindow(self):
@@ -76,3 +87,10 @@ class EmployeeCodes:
         acceptButton['font'] = self.font
 
         self.frame.grid_columnconfigure(4, minsize=100)
+
+
+
+def confirmEmployee(numEmployeeIdCode, strEmployeeName):
+    answer = askyesno(title='Confirmation',
+                        message='Code: {0} Name: {1}'.format(numEmployeeIdCode, strEmployeeName) )
+    return answer
