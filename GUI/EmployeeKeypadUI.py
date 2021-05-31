@@ -2,10 +2,12 @@ import tkinter as tk
 import tkinter.font as font
 from tkinter.messagebox import askyesno, askquestion
 import numpy as np
+import ProductDisplay
 
 class EmployeeCodes:
-    def __init__(self, master, listEmployeeCodes):
+    def __init__(self, master, listEmployeeCodes, listProductDetail):
         self.listEmployeeCodes = listEmployeeCodes
+        self.listProductDetail = listProductDetail
         self.master = master
         self.frame = tk.Frame(self.master)
         self.textEntryWidget = tk.Entry(self.frame)
@@ -52,7 +54,11 @@ class EmployeeCodes:
         if np.min(np.isin(numEmployeeIdCode, self.listEmployeeCodes['Code'])) :
             idxRow = np.min(np.where(self.listEmployeeCodes['Code'] == numEmployeeIdCode ))
             print("Code: {0} Employee Name: {1}".format(numEmployeeIdCode, self.listEmployeeCodes['Name'][idxRow]))
-            bCorrectEmployee = confirmEmployee(numEmployeeIdCode, self.listEmployeeCodes['Name'][idxRow])
+            bCorrectEmployee = self.confirmEmployee(numEmployeeIdCode, self.listEmployeeCodes['Name'][idxRow])
+
+            if(bCorrectEmployee):
+                strProduct = ProductDisplay.ProductDetails(self.master, self.listProductDetail)
+
         else:
             print("Code: {0} not in database".format(numEmployeeIdCode))
             ValueError
@@ -79,18 +85,18 @@ class EmployeeCodes:
                     btnColor = 'gray'
 
                 keyPadButton = tk.Button(self.frame, text=key, bg=btnColor, command=lambda val=key:self.keyPadPressed(val))
-                keyPadButton.grid(row=y, column=x, ipadx=50, ipady=50)
+                keyPadButton.grid(row=y, column=x, ipadx=50, ipady=50, sticky = "NSEW")
                 keyPadButton['font'] = self.font
 
         acceptButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.acceptButtonPressed())
         acceptButton.grid(row=y+1, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
         acceptButton['font'] = self.font
 
-        self.frame.grid_columnconfigure(4, minsize=100)
+        self.frame.grid_columnconfigure(5, minsize=0)
 
 
 
-def confirmEmployee(numEmployeeIdCode, strEmployeeName):
-    answer = askyesno(title='Confirmation',
-                        message='Code: {0} Name: {1}'.format(numEmployeeIdCode, strEmployeeName) )
-    return answer
+    def confirmEmployee(self, numEmployeeIdCode, strEmployeeName):
+        answer = askyesno(title='Confirmation',
+                            message='Code: {0}\nName: {1}'.format(numEmployeeIdCode, strEmployeeName) )
+        return answer
