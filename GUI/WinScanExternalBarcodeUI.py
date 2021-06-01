@@ -200,11 +200,11 @@ class WinScanExternalBarcodeUI:
         # TODO: how to make the last 5 digits unique
         oCode128 = barcode.get_barcode_class('code128')
         code128 = oCode128("{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), writer=ImageWriter())
-        code128.save('../DataStore/Output/barcode')
+        code128.save('DataStore/Output/barcode')
 
     def printSetupUI(self):
         # show barcode
-        image1 = Image.open("../DataStore/Output/barcode.png")
+        image1 = Image.open("DataStore/Output/barcode.png")
         test = ImageTk.PhotoImage(image1)
 
         label = tk.Label(self.frame, image=test)
