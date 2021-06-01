@@ -199,30 +199,28 @@ class WinScanExternalBarcodeUI:
         # TODO: how does the first set relate to product code
         # TODO: how to make the last 5 digits unique
         oCode128 = barcode.get_barcode_class('code128')
-        code128 = oCode128("{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), writer=ImageWriter())
-        code128.save('DataStore/Output/barcode')
+        code128 = oCode128("{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), writer=ImageWriter())
+        code128.save('../DataStore/Output/barcode')
 
     def printSetupUI(self):
-        label = tk.Label(self.frame, text="{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), font = self.font)
-        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+        # show barcode
+        image1 = Image.open("../DataStore/Output/barcode.png")
+        test = ImageTk.PhotoImage(image1)
 
-        # Create a photoimage object of the image in the path
-        barcodeImage = Image.open("DataStore/Output/barcode.png")
-        barcodePhotoImage = ImageTk.PhotoImage(barcodeImage)
-
-        barcodeWidget = tk.Label(self.frame, image=barcodePhotoImage)
-        barcodeWidget.image = barcodePhotoImage
-        barcodeWidget.grid(row=1, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+        label = tk.Label(self.frame, image=test)
+        label.image = test
+        label.grid(row=0, column=0, columnspan=1,ipadx=500, ipady=50, sticky = tk.W+tk.E)
 
         #TODO: check printer
 
         #TODO: print buttons
-        yesButton = tk.Button(self.frame, text='  PRINT  ', bg='green', command=lambda: self.printBarcode())
-        yesButton.grid(row=2, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+
+        yesButton = tk.Button(self.frame, text='PRINT', bg='green', command=lambda: self.printBarcode())
+        yesButton.grid(row=1, column=0, columnspan=2, ipadx=50, ipady=50, sticky = tk.W+tk.E)
         yesButton['font'] = self.font
 
         noButton = tk.Button(self.frame, text='CANCEL', bg='red', command=lambda: self.selectedIncorrectEmployee())
-        noButton.grid(row=2, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        noButton.grid(row=1, column=1, columnspan=2, ipadx=50, ipady=50, sticky = tk.W+tk.E)
         noButton['font'] = self.font
 
         self.frame.grid_columnconfigure(4, minsize=0)
