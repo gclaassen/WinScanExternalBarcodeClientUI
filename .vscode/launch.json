@@ -8,7 +8,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "GUI/WinScanExternalBarcodeUI.py",
+            "program": "GUI/main.py",
             "console": "integratedTerminal"
         }
     ]
