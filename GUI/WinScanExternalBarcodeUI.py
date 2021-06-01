@@ -1,8 +1,11 @@
+from tkinter import *
 import tkinter as tk
 import tkinter.font as font
 from tkinter.messagebox import askyesno, askquestion
+from PIL import Image, ImageTk
 import numpy as np
 import barcode
+from barcode.writer import ImageWriter
 
 class WinScanExternalBarcodeUI:
     def __init__(self, master, listEmployeeCodes, listProductDetail):
@@ -139,9 +142,12 @@ class WinScanExternalBarcodeUI:
         self.createEmployeesUI()
 
     def createProductUI(self):
-        y = 0
+        y = 1
         x = 0
         getUniqueProducts = np.unique(self.listProductDetail['Fruit'])
+
+        label = tk.Label(self.frame, text="CHOOSE PRODUCT", font = self.font)
+        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
 
         for idxProducts, product in enumerate(getUniqueProducts):
             print("{0} {1}".format(idxProducts, product))
@@ -166,8 +172,11 @@ class WinScanExternalBarcodeUI:
         self.createClassUI()
 
     def createClassUI(self):
-        y = 0
+        y = 1
         x = 0
+
+        label = tk.Label(self.frame, text="CHOOSE CLASS", font = self.font)
+        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
 
         for idxClass, prodClass in enumerate(self.listProductClassDetail['Class']):
             print("{0} {1}".format(idxClass, prodClass))
@@ -183,7 +192,40 @@ class WinScanExternalBarcodeUI:
         self.valChosenProductCode = np.unique(tempProductCodeArr['Code'])[0]
         self.clearFrame()
         self.barcodeGenerator()
+        self.printSetupUI()
 
     def barcodeGenerator(self):
+        # TODO:
+        oCode128 = barcode.get_barcode_class('code128')
+        code128 = oCode128("{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), writer=ImageWriter())
+        code128.save('DataStore/Output/barcode')
+
+    def printSetupUI(self):
+        # show barcode
+        # canvas = tk.Canvas(self.frame, width = 100, height = 100)
+        # canvas.grid(row=0, column=0, ipadx=50, ipady=50, sticky="NSEW")
+        # img = tk.PhotoImage(file=)
+        # canvas.create_image(20,20, anchor='center', image=img)
+
+        # Create a photoimage object of the image in the path
+        image1 = Image.open("DataStore/Output/barcode.png")
+        test = ImageTk.PhotoImage(image1)
+
+        label = tk.Label(self.frame, image=test)
+        label.image = test
+        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+
+        #TODO: check printer
+
+        #TODO: print buttons
+        yesButton = tk.Button(self.frame, text='PRINT', bg='green', command=lambda: self.printBarcode())
+        yesButton.grid(row=1, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        yesButton['font'] = self.font
+
+        noButton = tk.Button(self.frame, text='CANCEL', bg='red', command=lambda: self.selectedIncorrectEmployee())
+        noButton.grid(row=1, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        noButton['font'] = self.font
+
+    def printBarcode(self):
         # TODO:
         NotImplementedError
