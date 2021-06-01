@@ -198,32 +198,26 @@ class WinScanExternalBarcodeUI:
         # TODO:
         oCode128 = barcode.get_barcode_class('code128')
         code128 = oCode128("{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), writer=ImageWriter())
-        code128.save('DataStore/Output/barcode')
+        code128.save('../DataStore/Output/barcode')
 
     def printSetupUI(self):
         # show barcode
-        # canvas = tk.Canvas(self.frame, width = 100, height = 100)
-        # canvas.grid(row=0, column=0, ipadx=50, ipady=50, sticky="NSEW")
-        # img = tk.PhotoImage(file=)
-        # canvas.create_image(20,20, anchor='center', image=img)
-
-        # Create a photoimage object of the image in the path
-        image1 = Image.open("DataStore/Output/barcode.png")
+        image1 = Image.open("../DataStore/Output/barcode.png")
         test = ImageTk.PhotoImage(image1)
 
         label = tk.Label(self.frame, image=test)
         label.image = test
-        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+        label.grid(row=0, column=0, columnspan=1,ipadx=500, ipady=50, sticky = tk.W+tk.E)
 
         #TODO: check printer
 
         #TODO: print buttons
         yesButton = tk.Button(self.frame, text='PRINT', bg='green', command=lambda: self.printBarcode())
-        yesButton.grid(row=1, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        yesButton.grid(row=1, column=0, columnspan=2, ipadx=50, ipady=50, sticky = tk.W+tk.E)
         yesButton['font'] = self.font
 
         noButton = tk.Button(self.frame, text='CANCEL', bg='red', command=lambda: self.selectedIncorrectEmployee())
-        noButton.grid(row=1, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        noButton.grid(row=1, column=1, columnspan=2, ipadx=50, ipady=50, sticky = tk.W+tk.E)
         noButton['font'] = self.font
 
     def printBarcode(self):
