@@ -10,7 +10,6 @@ class WinScanExternalBarcodeUI:
         self.listProductDetail = listProductDetail
         self.master = master
         self.frame = tk.Frame(self.master)
-        self.textEntryWidget = tk.Entry(self.frame)
         self.frame.pack()
         self.font = font.Font(size=30)
         self.listChosenClass = None
@@ -41,56 +40,21 @@ class WinScanExternalBarcodeUI:
         for widget in self.frame.winfo_children():
             widget.destroy()
 
-        # this will clear frame and frame will be empty
-        # if you want to hide the empty panel then
-        # self.frame.pack_forget()
-
-    def keyPadPressed(self, value):
-        if value == self.backspaceIcon:
-            self.EmployeeIdCode = self.EmployeeIdCode[:-1]
-            self.textEntryWidget.delete('0', 'end')
-            self.textEntryWidget.insert('end', self.EmployeeIdCode)
-
-        elif value == self.cancelIcon:
-            # clear `pin`
-            self.EmployeeIdCode = ''
-            # clear `entry`
-            self.textEntryWidget.delete('0', 'end')
-
-        else:
-            self.EmployeeIdCode += value
-            self.textEntryWidget.insert('end', value)
-
-    def acceptButtonPressed(self):
-        self.valChosenEmployeeCode = int(self.EmployeeIdCode)
-        # clear `entry`
-        self.textEntryWidget.delete('0', 'end')
-        # clear global
-        self.EmployeeIdCode = ''
-
-        if np.min(np.isin(self.valChosenEmployeeCode, self.listEmployeeCodes['Code'])) :
-            idxRow = np.min(np.where(self.listEmployeeCodes['Code'] == self.valChosenEmployeeCode ))
-            self.valChosenEmployeeName = self.listEmployeeCodes['Name'][idxRow]
-            print("Code: {0} Employee Name: {1}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName))
-            bCorrectEmployee = self.confirmEmployee(self.valChosenEmployeeCode, self.valChosenEmployeeName)
-
-            if(bCorrectEmployee):
-                self.clearFrame()
-                self.createProductUI()
-
-        else:
-            print("Code: {0} not in database".format(self.valChosenEmployeeCode))
-            self.valChosenEmployeeCode = None
-            ValueError
+    def clearUserSelectedParameters(self):
+        self.valChosenEmployeeName = None
+        self.valChosenEmployeeCode = None
+        self.valChosenProduct = None
+        self.valChosenClass = None
+        self.valChosenProductCode = None
 
 
     def createEmployeesUI(self):
         btnColor = 'gray'
 
-        # self.textEntryWidget.config(state="readonly")
-        self.textEntryWidget.grid(row=0, column=0, columnspan=3, ipady=50)
-        self.textEntryWidget['font'] = self.font
+        self.clearUserSelectedParameters()
 
+        textEntry = tk.Entry(self.frame, font = self.font)
+        textEntry.grid(row=0, column=0, columnspan=3, ipady=50)
 
         # create buttons using `keys`
         for y, row in enumerate(self.EmployeeIdKeys, 1):
@@ -104,20 +68,75 @@ class WinScanExternalBarcodeUI:
                 else:
                     btnColor = 'gray'
 
-                keyPadButton = tk.Button(self.frame, text=key, bg=btnColor, command=lambda val=key:self.keyPadPressed(val))
+                keyPadButton = tk.Button(self.frame, text=key, bg=btnColor, command=lambda val=key:self.keyPadPressed(val, textEntry))
                 keyPadButton.grid(row=y, column=x, ipadx=45, ipady=45, sticky = "NSEW")
                 keyPadButton['font'] = self.font
 
-        acceptButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.acceptButtonPressed())
+        acceptButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.acceptButtonPressed(textEntry))
         acceptButton.grid(row=y+1, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
         acceptButton['font'] = self.font
 
         self.frame.grid_columnconfigure(5, minsize=0)
 
-    def confirmEmployee(self, numEmployeeIdCode, strEmployeeName):
-        answer = askyesno(title='Confirmation',
-                            message='Code: {0}\nName: {1}'.format(numEmployeeIdCode, strEmployeeName))
-        return answer
+    def acceptButtonPressed(self, textEntry):
+        self.valChosenEmployeeCode = int(self.EmployeeIdCode)
+        # clear `entry`
+        textEntry.delete('0', 'end')
+        # clear global
+        self.EmployeeIdCode = ''
+
+        if np.min(np.isin(self.valChosenEmployeeCode, self.listEmployeeCodes['Code'])) :
+            idxRow = np.min(np.where(self.listEmployeeCodes['Code'] == self.valChosenEmployeeCode ))
+            self.valChosenEmployeeName = self.listEmployeeCodes['Name'][idxRow]
+            print("Code: {0} Employee Name: {1}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName))
+
+            self.clearFrame()
+            self.confirmEmployee()
+
+        else:
+            print("Code: {0} not in database".format(self.valChosenEmployeeCode))
+            self.valChosenEmployeeCode = None
+            ValueError
+
+    def keyPadPressed(self, value, textEntry):
+        if value == self.backspaceIcon:
+            self.EmployeeIdCode = self.EmployeeIdCode[:-1]
+            textEntry.delete('0', 'end')
+            textEntry.insert('end', self.EmployeeIdCode)
+
+        elif value == self.cancelIcon:
+            # clear `pin`
+            self.EmployeeIdCode = ''
+            # clear `entry`
+            textEntry.delete('0', 'end')
+
+        else:
+            self.EmployeeIdCode += value
+            textEntry.insert('end', value)
+
+    def confirmEmployee(self):
+
+        label = tk.Label(self.frame, text="IS THIS CORRECT?\nCode: {0}\nName: {1}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName), font = self.font)
+        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+
+        yesButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.selectedCorrectEmployee())
+        yesButton.grid(row=1, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        yesButton['font'] = self.font
+
+        noButton = tk.Button(self.frame, text='NO', bg='red', command=lambda: self.selectedIncorrectEmployee())
+        noButton.grid(row=1, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
+        noButton['font'] = self.font
+
+        # answer = askyesno(title='Confirmation',
+        #                     message=')
+
+    def selectedCorrectEmployee(self):
+        self.clearFrame()
+        self.createProductUI()
+
+    def selectedIncorrectEmployee(self):
+        self.clearFrame()
+        self.createEmployeesUI()
 
     def createProductUI(self):
         y = 0
@@ -166,4 +185,5 @@ class WinScanExternalBarcodeUI:
         self.barcodeGenerator()
 
     def barcodeGenerator(self):
+        # TODO:
         NotImplementedError
