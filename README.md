@@ -25,5 +25,7 @@ Python version 3.X is required.
 
 > make && sudo make install
 
+> in python: import pycups
+
 ### python pip install commandline
 >pip3 install numpy pandas python-barcode xlrd python-barcode "python-barcode[images]"
