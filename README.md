@@ -4,7 +4,7 @@ This script is build for linux compatible OS'es. The UI was executed and tested 
 
 Python version 3.X is required.
 
-### python modules:
+### Python modules:
 - pandas
 - numpy
 - python-barcode
@@ -14,18 +14,36 @@ Python version 3.X is required.
 - pillow
 - python-barcode images
 
-### packages required for linux
+### Packages required for linux
 > sudo apt install python3-tk python3-pil python3-pil.imagetk python3-dev libcups2-dev gcc
 
+### Get the correct linux drivers for the printer
+ARGOX X-1000vl Printer:
 
-### cups for accessing and using the printer
+Linux 64-bit:
+> wget https://www.argox.com/wp-content/uploads/2018/08/ARGOX_Linux_Printer_Driver-V1.4.064-bit.zip
+
+Linux 32-bit:
+> wget https://www.argox.com/wp-content/uploads/2018/08/ARGOX_Linux_Printer_Driver-V1.4.032-bit.zip
+
+Raspberry Pi:
+> wget https://www.argox.com/wp-content/uploads/2018/08/ARGOX_RPi_Printer_Driver-V1.4.0armhf.zip
+
+To install drivers:
+> unzip *argox-driver* -d *folder/to/driver*
+
+> cd *folder/to/driver*
+
+> sudo bash ./install
+
+### Cups for accessing and using the printer
 > git clone https://github.com/OpenPrinting/pycups.git
 
 > cd pycups
 
 > make && sudo make install
 
-> in python: import pycups
+> in python: import cups
 
-### python pip install commandline
+### Python pip install commandline
 >pip3 install numpy pandas python-barcode xlrd python-barcode "python-barcode[images]"

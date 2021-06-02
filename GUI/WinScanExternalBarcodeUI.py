@@ -7,6 +7,7 @@ import numpy as np
 import barcode
 from barcode.writer import ImageWriter
 import os
+import cups
 import common
 
 class WinScanExternalBarcodeUI:
@@ -145,12 +146,14 @@ class WinScanExternalBarcodeUI:
         self.createProductUI()
 
     def createProductUI(self):
-        y = 1
+        y = 0
         x = 0
         getUniqueProducts = np.unique(self.listProductDetail['Fruit'])
 
         label = tk.Label(self.frame, text="CHOOSE PRODUCT", font = self.font)
-        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+        label.grid(row=y, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+
+        y = y + 1
 
         for idxProducts, product in enumerate(getUniqueProducts):
             print("{0} {1}".format(idxProducts, product))
@@ -159,8 +162,10 @@ class WinScanExternalBarcodeUI:
             productButton['font'] = self.font
             [y,x] = self.getGridLocation(y, x)
 
+        y = y + 1
+
         cancelButton = tk.Button(self.frame, text='CANCEL', bg=common.colorCancel, command=lambda: self.cancelOperation())
-        cancelButton.grid(row=y+1, column=0, columnspan=self.productColSize, ipady=50, sticky = tk.W+tk.E)
+        cancelButton.grid(row=y, column=0, columnspan=self.productColSize, ipady=50, sticky = tk.W+tk.E)
         cancelButton['font'] = self.font
 
 
@@ -215,7 +220,7 @@ class WinScanExternalBarcodeUI:
         self.printSetupUI()
 
     def barcodeGenerator(self):
-        # TODO: how does the first set relate to product code
+        # TODO: how does the first set relate to product code -> do I rather need to access the db
         # TODO: how to make the last 5 digits unique
         oCode128 = barcode.get_barcode_class('code128')
         code128 = oCode128("{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), writer=ImageWriter())
@@ -233,7 +238,7 @@ class WinScanExternalBarcodeUI:
         barcodeWidget.image = barcodePhotoImage
         barcodeWidget.grid(row=1, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
 
-        #TODO: check printer
+        #TODO: check printer status
 
         #TODO: print buttons
         yesButton = tk.Button(self.frame, text='  PRINT  ', bg=common.colorAccept, command=lambda: self.printBarcode())
