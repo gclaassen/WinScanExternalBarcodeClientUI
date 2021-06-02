@@ -7,6 +7,7 @@ import numpy as np
 import barcode
 from barcode.writer import ImageWriter
 import os
+import common
 
 class WinScanExternalBarcodeUI:
     def __init__(self, master, listEmployeeCodes, listProductDetail):
@@ -44,6 +45,11 @@ class WinScanExternalBarcodeUI:
         for widget in self.frame.winfo_children():
             widget.destroy()
 
+
+    def cancelOperation(self):
+        self.clearFrame()
+        self.createEmployeesUI()
+
     def clearUserSelectedParameters(self):
         self.valChosenEmployeeName = None
         self.valChosenEmployeeCode = None
@@ -53,7 +59,7 @@ class WinScanExternalBarcodeUI:
 
 
     def createEmployeesUI(self):
-        btnColor = 'gray'
+        btnColor = common.colorDefault
 
         self.clearUserSelectedParameters()
 
@@ -66,17 +72,17 @@ class WinScanExternalBarcodeUI:
                 # `lambda` inside `for` has to use `val=key:code(val)`
                 # instead of direct `code(key)`
                 if key == self.backspaceIcon:
-                    btnColor = 'goldenrod1'
+                    btnColor = common.colorBackspace
                 elif key == self.cancelIcon:
-                    btnColor = 'red'
+                    btnColor = common.colorCancel
                 else:
-                    btnColor = 'gray'
+                    btnColor = common.colorDefault
 
                 keyPadButton = tk.Button(self.frame, text=key, bg=btnColor, command=lambda val=key:self.keyPadPressed(val, textEntry))
                 keyPadButton.grid(row=y, column=x, ipadx=45, ipady=45, sticky = "NSEW")
                 keyPadButton['font'] = self.font
 
-        acceptButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.acceptButtonPressed(textEntry))
+        acceptButton = tk.Button(self.frame, text='YES', bg=common.colorAccept, command=lambda: self.acceptButtonPressed(textEntry))
         acceptButton.grid(row=y+1, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
         acceptButton['font'] = self.font
 
@@ -123,11 +129,11 @@ class WinScanExternalBarcodeUI:
         label = tk.Label(self.frame, text="IS THIS CORRECT?\nCode: {0}\nName: {1}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName), font = self.font)
         label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
 
-        yesButton = tk.Button(self.frame, text='YES', bg='green', command=lambda: self.selectedCorrectEmployee())
+        yesButton = tk.Button(self.frame, text='YES', bg=common.colorAccept, command=lambda: self.selectedCorrectEmployee())
         yesButton.grid(row=1, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
         yesButton['font'] = self.font
 
-        noButton = tk.Button(self.frame, text='NO', bg='red', command=lambda: self.selectedIncorrectEmployee())
+        noButton = tk.Button(self.frame, text='NO', bg=common.colorCancel, command=lambda: self.cancelOperation())
         noButton.grid(row=1, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
         noButton['font'] = self.font
 
@@ -137,10 +143,6 @@ class WinScanExternalBarcodeUI:
     def selectedCorrectEmployee(self):
         self.clearFrame()
         self.createProductUI()
-
-    def selectedIncorrectEmployee(self):
-        self.clearFrame()
-        self.createEmployeesUI()
 
     def createProductUI(self):
         y = 1
@@ -152,10 +154,14 @@ class WinScanExternalBarcodeUI:
 
         for idxProducts, product in enumerate(getUniqueProducts):
             print("{0} {1}".format(idxProducts, product))
-            productButton = tk.Button(self.frame, text=product, bg='gray', command=lambda val=product:self.productChosen(val))
+            productButton = tk.Button(self.frame, text=product, bg=common.colorDefault, command=lambda val=product:self.productChosen(val))
             productButton.grid(row=y, column=x, ipadx=15, ipady=15, sticky="NSEW")
             productButton['font'] = self.font
             [y,x] = self.getGridLocation(y, x)
+
+        cancelButton = tk.Button(self.frame, text='CANCEL', bg=common.colorCancel, command=lambda: self.cancelOperation())
+        cancelButton.grid(row=y+1, column=0, columnspan=self.productColSize, ipady=50, sticky = tk.W+tk.E)
+        cancelButton['font'] = self.font
 
 
     def getGridLocation(self, prevRow, prevCol):
@@ -173,18 +179,31 @@ class WinScanExternalBarcodeUI:
         self.createClassUI()
 
     def createClassUI(self):
-        y = 1
+        y = 0
         x = 0
 
+        label = tk.Label(self.frame, text="SIZE CHOSEN: {0}".format(self.valChosenProduct), font = self.font)
+        label.grid(row=y, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+
+        y = y + 1
+
         label = tk.Label(self.frame, text="CHOOSE CLASS", font = self.font)
-        label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+        label.grid(row=y, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
+
+        y = y + 1
 
         for idxClass, prodClass in enumerate(self.listProductClassDetail['Class']):
             print("{0} {1}".format(idxClass, prodClass))
-            productButton = tk.Button(self.frame, text=prodClass, bg='gray', command=lambda val=prodClass:self.classChosen(val))
+            productButton = tk.Button(self.frame, text=prodClass, bg=common.colorDefault, command=lambda val=prodClass:self.classChosen(val))
             productButton.grid(row=y, column=x, ipadx=15, ipady=15, sticky="NSEW")
             productButton['font'] = self.font
             [y,x] = self.getGridLocation(y, x)
+
+        y = y + 1
+
+        cancelButton = tk.Button(self.frame, text='CANCEL', bg=common.colorCancel, command=lambda: self.cancelOperation())
+        cancelButton.grid(row=y, column=0, columnspan=self.productColSize, ipady=50, sticky = tk.W+tk.E)
+        cancelButton['font'] = self.font
 
     def classChosen(self, value):
         self.valChosenClass = value
@@ -217,11 +236,11 @@ class WinScanExternalBarcodeUI:
         #TODO: check printer
 
         #TODO: print buttons
-        yesButton = tk.Button(self.frame, text='  PRINT  ', bg='green', command=lambda: self.printBarcode())
+        yesButton = tk.Button(self.frame, text='  PRINT  ', bg=common.colorAccept, command=lambda: self.printBarcode())
         yesButton.grid(row=2, column=0, columnspan=1, ipady=50, sticky = tk.W+tk.E)
         yesButton['font'] = self.font
 
-        noButton = tk.Button(self.frame, text='CANCEL', bg='red', command=lambda: self.selectedIncorrectEmployee())
+        noButton = tk.Button(self.frame, text='CANCEL', bg=common.colorCancel, command=lambda: self.cancelOperation())
         noButton.grid(row=2, column=2, columnspan=1, ipady=50, sticky = tk.W+tk.E)
         noButton['font'] = self.font
 
