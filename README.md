@@ -10,12 +10,9 @@ Python version 3.X is required.
 - python-barcode
 - barcode
 - xlrd
-- python-barcode
-- pillow
-- python-barcode images
-
+- treepoem
 ### Packages required for linux
-> sudo apt install python3-tk python3-pil python3-pil.imagetk python3-dev libcups2-dev gcc
+> sudo apt install python3-tk python3-pil python3-pil.imagetk python3-dev libcups2-dev gcc ghostscript barcode
 
 ### Get the correct linux drivers for the printer
 ARGOX X-1000vl Printer:
@@ -46,4 +43,4 @@ To install drivers:
 > in python: import cups
 
 ### Python pip install commandline
->pip3 install numpy pandas python-barcode xlrd python-barcode "python-barcode[images]"
+>pip3 install numpy pandas python-barcode xlrd treepoem

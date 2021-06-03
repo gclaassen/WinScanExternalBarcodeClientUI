@@ -10,6 +10,11 @@ import os
 import cups
 import common
 
+from subprocess import check_output
+from subprocess import call
+from time import sleep
+import ghostscript
+
 class WinScanExternalBarcodeUI:
     def __init__(self, master, listEmployeeCodes, listProductDetail):
         self.listEmployeeCodes = listEmployeeCodes
@@ -220,7 +225,7 @@ class WinScanExternalBarcodeUI:
         self.printSetupUI()
 
     def barcodeGenerator(self):
-        # TODO: how does the first set relate to product code -> do I rather need to access the db
+        # TODO: how does the first set relate to product code
         # TODO: how to make the last 5 digits unique
         oCode128 = barcode.get_barcode_class('code128')
         code128 = oCode128("{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), writer=ImageWriter())
@@ -253,4 +258,7 @@ class WinScanExternalBarcodeUI:
 
     def printBarcode(self):
         # TODO:
-        NotImplementedError
+        conn = cups.Connection()
+        printers = conn.getPrinters()
+        conn.printFile(common.printer_name,'DataStore/Output/test.hex',"{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), {})
+        # conn.printFile(common.printer_name,'DataStore/Output/test.eps',"{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), {})
