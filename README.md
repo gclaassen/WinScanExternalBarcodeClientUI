@@ -44,3 +44,16 @@ To install drivers:
 
 ### Python pip install commandline
 >pip3 install numpy pandas python-barcode xlrd treepoem
+
+## TODO:
+- Printer: ARGOX X-1000 VL
+- Page and Label Setup:
+  - Orientation: Portrait
+  - Page size: 94.1 x 126.6mm
+  - Label size: 45.3 x 23mm (w x h)
+  - Left margin: 1mm
+  - Top margin: 2mm
+  - Horizontal gap: 2.5mm
+  - Vertical gap: 2.4mm
+- File types: PCX, BMP, GDI, (IMG, HEX)
+

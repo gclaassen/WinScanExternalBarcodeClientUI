@@ -260,5 +260,5 @@ class WinScanExternalBarcodeUI:
         # TODO:
         conn = cups.Connection()
         printers = conn.getPrinters()
-        conn.printFile(common.printer_name,'DataStore/Output/test.hex',"{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), {})
+        conn.printFile(common.printer_name,'DataStore/Output/test.pcx',"{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), {})
         # conn.printFile(common.printer_name,'DataStore/Output/test.eps',"{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), {})
