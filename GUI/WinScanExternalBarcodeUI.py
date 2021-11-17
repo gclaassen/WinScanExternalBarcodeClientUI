@@ -234,6 +234,8 @@ class WinScanExternalBarcodeUI:
 
         barcode.generate("code128", "{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), output='DataStore/Output/barcode', writer=writer, text="KRYGER")
 
+        # Text: Name \n Job \n unique code
+
     def printSetupUI(self):
         label = tk.Label(self.frame, text="{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), font = self.font)
         label.grid(row=0, column=0, columnspan=3, ipady=50, sticky = tk.W+tk.E)
