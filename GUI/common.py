@@ -14,4 +14,9 @@ productXlsFilePath = r'DataStore/Input/Products/prodcodes.XLS'
 productCsvFilePath = r'DataStore/Input/Products/prodcodes.csv'
 productColumnList = ['Code', 'Descr', 'Fruit', 'Class']
 
+opts = {}
+opts["module_height"] = 23 #mm
+opts["module_width"] =  45.3, # mm
+opts["center_text"] = True
+
 # yes 00200014260 | head -10 |  barcode -u mm -p 94x126.6mm -t 2x5-2.4-2 -g 45.3x23-2.5-2 -e 128 > test.hex

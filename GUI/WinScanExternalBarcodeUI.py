@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import numpy as np
 import barcode
 from barcode.writer import ImageWriter
+from barcode.writer import SVGWriter
 import os
 import cups
 import common
@@ -227,9 +228,11 @@ class WinScanExternalBarcodeUI:
     def barcodeGenerator(self):
         # TODO: how does the first set relate to product code
         # TODO: how to make the last 5 digits unique
-        oCode128 = barcode.get_barcode_class('code128')
-        code128 = oCode128("{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), writer=ImageWriter())
-        code128.save('DataStore/Output/barcode')
+        # writer = SVGWriter()
+        writer = ImageWriter()
+        writer.set_options(options=common.opts)
+
+        barcode.generate("code128", "{0:03d}{1:04d}{2:05d}".format(2, self.valChosenEmployeeCode, 4260), output='DataStore/Output/barcode', writer=writer, text="KRYGER")
 
     def printSetupUI(self):
         label = tk.Label(self.frame, text="{0} {1} {2}".format(self.valChosenEmployeeCode, self.valChosenEmployeeName, self.valChosenProductCode), font = self.font)
