@@ -1,6 +1,6 @@
 # WIP
 
-# WinScanExternalBarcodeUI
+# WinScanExternalBarcodeClientUI
 
 This script is build for linux compatible OS'es. The UI was executed and tested on PC running POP-OS 20.04, and a Raspberry Pi and RPi Zero.
 
